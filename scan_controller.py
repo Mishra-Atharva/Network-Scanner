@@ -1,0 +1,58 @@
+"""
+Program: Scan Controller
+Description: Use the NetowrkScanner and DeviceHandler in order to scan the network for devices
+Author: Atharva Mishra
+
+Libraries Used:
+    [-] Threading - 
+    [-] Time -     
+    [-] Device Manager - List of Devices
+    [-] NetworkScanner - Arp Scan
+    [-] Status - Pinging Devices from the list of devices
+"""
+
+import threading
+import time
+from device_handler import Device_Manager
+from network_scanner import NetworkScanner
+from status_handler import Status
+
+
+dm = Device_Manager()
+ns = NetworkScanner()
+st = Status()
+
+
+def continuous_scan():
+
+    while True:
+        dm.add(ns.arp_scan())
+
+
+def status_update():
+
+    while True:
+        time.sleep(120)
+        dm.add(st.check_devices(dm.devices))
+        dm.export_devices("devices.json")
+    
+
+def main():
+
+    dm.import_devices("devices.json")
+    
+    _continuous = threading.Thread(target=continuous_scan, daemon=True)
+    _status = threading.Thread(target=status_update, daemon=True)
+
+    _continuous.start()
+    _status.start()
+
+    try:
+        while True:
+            pass
+    except KeyboardInterrupt:
+        print("Shutting down...")
+
+
+if __name__ == "__main__":
+    main()

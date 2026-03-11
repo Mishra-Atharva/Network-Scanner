@@ -1,4 +1,4 @@
 zeroconf
 scapy
 yaspin
-tabulate
+pythonping
