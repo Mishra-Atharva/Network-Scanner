@@ -162,8 +162,6 @@ class Device_Manager:
     # Exports all devices into a json file
     def export_devices(self, file: str) -> None:
 
-        file_path = Path(file)
-
         # Check file
         file_path = Path(file)
 

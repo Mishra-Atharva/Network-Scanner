@@ -31,6 +31,7 @@ class NetworkScanner:
     # Setup
     def __init__(self):
         self.subnet = self.find_subnet()
+        self.model = None
 
     def find_subnet(self):
         try:
