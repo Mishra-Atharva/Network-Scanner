@@ -31,24 +31,6 @@ class NetworkScanner:
     # Setup
     def __init__(self):
         self.subnet = self.find_subnet()
-        self.services = [
-            "_googlecast._tcp.local.",         # Google Home, Nest, Chromecast
-            "_hap._tcp.local.",                 # Apple HomeKit Accessories
-            "_homekit._tcp.local.",             # Apple HomeKit (alternative)
-            # "_airplay._tcp.local.",           # Apple AirPlay (DOESN'T WORK)
-            # "_companion-link._tcp.local.",    # Apple Companion Link (DOESN'T WORK)
-            "_sonos._tcp.local.",               # Sonos Speakers
-            # "_spotify-connect._tcp.local.",     # Spotify Connect
-            "_philips-hue._tcp.local.",         # Philips Hue Bridge
-            "_roku._tcp.local.",                # Roku devices
-            "_bose._tcp.local.",                # Bose SoundTouch
-            "_amzn-wplay._tcp.local.",          # Amazon Whisperplay (Fire TV)
-            "_tplink._tcp.local.",              # TP-Link Kasa devices? (Less common)
-            "_http._tcp.local.",                # Any device with a web server
-            "_printer._tcp.local.",             # Network Printers
-            "_ssh._tcp.local.",               # Devices with SSH (Raspberry Pi, etc.) (DOESN'T WORK)
-            "_workstation._tcp.local.",         # PCs and Macs
-        ]
 
     def find_subnet(self):
         try:
