@@ -13,6 +13,7 @@ Libraries Used:
 
 import threading
 import time
+from router_manager import Router
 from device_handler import Device_Manager
 from network_scanner import NetworkScanner
 from status_handler import Status
@@ -38,7 +39,8 @@ def status_update():
     
 
 def main():
-
+    
+    Router("username", "password")
     dm.import_devices("devices.json")
     
     _continuous = threading.Thread(target=continuous_scan, daemon=True)

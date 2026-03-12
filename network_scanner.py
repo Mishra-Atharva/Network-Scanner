@@ -11,53 +11,31 @@ Libraries Used:
     [-] Logging - For logging issues
 """
 
+import netifaces
+import ipaddress
 import logging as log 
 import socket
 from scapy.all import *
 from yaspin import yaspin
 from device_handler import Device
-# from zeroconf import Zeroconf, ServiceBrowser, ServiceListener
 
 
 # Loggins Setup 
 log.basicConfig(level= log.DEBUG, format="[ %(levelname)s ]  %(message)s | [ %(function)s ] | [ %(asctime)s ]", datefmt="%Y-%m-%d %H:%M:%S", filename="NetworkScannerLogs.log")
 
 
+MASK = "255.255.255.0"
+
 # Network Scanner class contains ARP scan and MDNS scan function
-# After initializing the NetworkScanner object, use the arp_scan() and/or mdns_scan() to scan the network for the devices
+# After initializing the NetworkScanner object, use the arp_scan() to scan the network for the devices
 # Both scans will return a list of devices, which then need to cleaned later to avoid duplicate devices
 class NetworkScanner:
 
     # Setup
     def __init__(self):
-        self.subnet = self.find_subnet()
-        self.model = None
 
-    def find_subnet(self):
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            sock.connect(("8.8.8.8", 80))
-            ip = sock.getsockname()[0]
-            sock.close()
-
-            counter = 0
-            length = 0
-
-            for i in range(len(ip)-1):
-                if (ip[i] == '.'):
-                    counter += 1
-                
-                if (counter == 3):
-                    length = i 
-                    break 
-            
-            subnet = f"{ip[:length]}.0/24"
-            print(f"[*] Subnet set to: {subnet}")
-            return subnet
-            
-        except Exception as e:
-            log.error(e, extra={"function": "NetworkScanner.find_subnet"})
-            return None
+        router_ip = netifaces.gateways().get('default', {}).get(netifaces.AF_INET)[0]
+        self.subnet = str(ipaddress.IPv4Interface(f"{router_ip}/{MASK}").network)
 
     # REVERSE DNS --> Getting name of devices
     def reverse_dns(self, ip: str) -> str:

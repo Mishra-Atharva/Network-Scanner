@@ -4,3 +4,4 @@ requests
 pythonping
 urllib3
 beautifulsoup4
+netifaces
