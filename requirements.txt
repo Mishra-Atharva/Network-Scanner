@@ -1,4 +1,6 @@
-zeroconf
 scapy
 yaspin
+requests
 pythonping
+urllib3
+beautifulsoup4
