@@ -13,6 +13,7 @@ Libraries Used:
 
 import netifaces
 import ipaddress
+import requests
 import logging as log 
 import socket
 from scapy.all import *
@@ -38,13 +39,17 @@ class NetworkScanner:
         self.subnet = str(ipaddress.IPv4Interface(f"{router_ip}/{MASK}").network)
 
     # REVERSE DNS --> Getting name of devices
-    def reverse_dns(self, ip: str) -> str:
+    def reverse_dns(self, ip: str, mac: str) -> str:
         try:
             name = socket.gethostbyaddr(ip)[0]
             return name 
         
         except:
-            return None
+            url = f"https://api.maclookup.app/v2/macs/{mac.replace(":", "")[:6]}"
+            resp = requests.get(url)
+
+            if resp.status_code < 400:
+                return resp.json()['company']
 
     # ARP SCAN --> All connected devices on the network
     def arp_scan(self, timeout: int = 60) -> list:
@@ -62,7 +67,7 @@ class NetworkScanner:
             for sent, recv in data:
 
                 # Details
-                name = self.reverse_dns(recv.psrc)
+                name = self.reverse_dns(recv.psrc, recv.hwsrc)
                 ip = recv.psrc
                 mac = recv.hwsrc
 

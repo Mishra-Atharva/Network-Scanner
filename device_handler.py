@@ -178,7 +178,6 @@ class Device_Manager:
 
 
 
-
 # Testing Classes and Functions
 if __name__ == "__main__":
 

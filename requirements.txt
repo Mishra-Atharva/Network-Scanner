@@ -5,3 +5,4 @@ pythonping
 urllib3
 beautifulsoup4
 netifaces
+python-nmap

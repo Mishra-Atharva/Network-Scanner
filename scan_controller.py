@@ -40,7 +40,7 @@ def status_update():
 
 def main():
     
-    Router("username", "password")
+    # Router("username", "password")
     dm.import_devices("devices.json")
     
     _continuous = threading.Thread(target=continuous_scan, daemon=True)
