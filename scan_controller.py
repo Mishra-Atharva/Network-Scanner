@@ -17,6 +17,7 @@ from router_manager import Router
 from device_handler import Device_Manager
 from network_scanner import NetworkScanner
 from status_handler import Status
+from api_connector import push_to_database, login
 
 
 dm = Device_Manager()
@@ -30,21 +31,26 @@ def continuous_scan():
         dm.add(ns.arp_scan())
 
 
-def status_update():
+def status_update(auth: str):
 
     while True:
         time.sleep(120)
         dm.add(st.check_devices(dm.devices))
         dm.export_devices("devices.json")
+
+        for dev in dm.devices:
+            push_to_database(dev.export(), auth)
     
 
 def main():
     
     # Router("username", "password")
     dm.import_devices("devices.json")
+
+    auth = login()
     
     _continuous = threading.Thread(target=continuous_scan, daemon=True)
-    _status = threading.Thread(target=status_update, daemon=True)
+    _status = threading.Thread(target=status_update, daemon=True, args=(auth,))
 
     _continuous.start()
     _status.start()

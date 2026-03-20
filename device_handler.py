@@ -39,7 +39,7 @@ log.basicConfig(level= log.DEBUG, format="[ %(levelname)s ]  %(message)s | [ %(f
 class Device:
 
     # Setup
-    def __init__(self, name: str, ip: str, mac: str, ports: list = None, status: str = "Offline"):
+    def __init__(self, name: str, ip: str, mac: str, ports: list = [], status: str = "Offline"):
 
         self.d_name = name
         self.d_ip = ip
@@ -51,11 +51,11 @@ class Device:
     def export(self):
         
         return {
-            "Name": self.d_name,
-            "IP Address": self.d_ip,
-            "Mac Address": self.d_mac,
-            "Open Ports": self.d_ports,
-            "Status": self.d_status
+            "name": self.d_name,
+            "ip": self.d_ip,
+            "mac": self.d_mac,
+            "ports": self.d_ports,
+            "status": self.d_status
         }
 
     # Setters
