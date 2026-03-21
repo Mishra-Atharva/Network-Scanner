@@ -15,14 +15,12 @@ import threading
 import time
 from device_handler import Device_Manager
 from network_scanner import NetworkScanner
-from status_handler import Status
 from api_connector import *
 import argparse
 
 # Instantiate
 dm = Device_Manager()
 ns = NetworkScanner()
-st = Status()
 
 # Scanning for devices
 def continuous_scan():
@@ -35,16 +33,25 @@ def status_update(auth: str):
 
     while True:
         time.sleep(120)
-        dm.add(st.check_devices(dm.devices))
+
+        dm.export_devices("devices.json")
+        
+        print("[*] Status Check Started!")
+        dm.add(ns.check_devices(dm.devices))
+        print("[*] Status Update Complete!")
+
         dm.export_devices("devices.json")
 
         for dev in dm.devices:
             push_to_database(dev.export(), auth)
+        print("[*] Database Updated!")
 
 # Main function
 def main(args):
     
     dm.import_devices("devices.json")
+    for dev in dm.devices:
+        print(dev.export())
 
     if args.command == "login":
         auth = login(args.email, args.password)

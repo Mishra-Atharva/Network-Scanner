@@ -13,13 +13,15 @@ Libraries Used:
 
 import netifaces
 import ipaddress
+import nmap
 import requests
 import logging as log 
 import socket
 from scapy.all import *
 from yaspin import yaspin
 from device_handler import Device
-
+from pythonping import ping 
+from device_handler import Device
 
 # Loggins Setup 
 log.basicConfig(level= log.DEBUG, format="[ %(levelname)s ]  %(message)s | [ %(function)s ] | [ %(asctime)s ]", datefmt="%Y-%m-%d %H:%M:%S", filename="NetworkScannerLogs.log")
@@ -37,6 +39,50 @@ class NetworkScanner:
 
         router_ip = netifaces.gateways().get('default', {}).get(netifaces.AF_INET)[0]
         self.subnet = str(ipaddress.IPv4Interface(f"{router_ip}/{MASK}").network)
+        self.nm = nmap.PortScanner()
+
+    def check_devices(self, devices: list[Device]) -> list[Device]:
+
+        for d in devices:
+            response = ping(target=d.get_ip(), count=1, verbose=False)
+            if (response.packet_loss > 0):
+                d.set_status("Offline")
+            else:
+                d.set_status("Online")
+
+            with yaspin(text="[ Port Scanning ] - Check for open ports") as sp:
+                d.set_ports(self.port_scanner(d.get_ip()))
+            sp.ok()
+
+        print("[*] Device Check Completed!")
+        return devices
+
+    def port_scanner(self, ip: str):
+    
+        # For storing open ports
+        ports = []
+
+        # Scanning the device for open ports
+        self.nm.scan(ip, arguments="-F")
+    
+        for host in self.nm.all_hosts():
+            for proto in self.nm[host].all_protocols():
+
+                # Grabbing all ports
+                lport = self.nm[host][proto].keys()
+        
+                # Finding open ports
+                for port in lport:
+                    if (self.nm[host][proto][port]['state'] == "open"):
+                        ports.append(port)
+
+        if len(ports) > 0:
+            print("[*] Found open ports")
+        else:
+            print("[*] No open ports found")
+
+        # Return all open ports found
+        return ports
 
     # REVERSE DNS --> Getting name of devices
     def reverse_dns(self, ip: str, mac: str) -> str:

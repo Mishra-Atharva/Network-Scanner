@@ -27,7 +27,7 @@ log.basicConfig(level= log.DEBUG, format="[ %(levelname)s ]  %(message)s | [ %(f
         name: "device_name",
         ip_addr: "device_ip",
         mac_addr: "device_mac",
-        open_ports: [],
+        ports: [],
         status: "Online" | "Offline"
     }
 """
@@ -62,14 +62,14 @@ class Device:
     def set_name(self, new_value): self.d_name = new_value
     def set_ip(self, new_value): self.d_ip = new_value
     def set_mac(self, new_value): self.d_mac = new_value
-    def set_open_ports(self, new_value): self.d_ports = new_value
+    def set_ports(self, new_value): self.d_ports = new_value
     def set_status(self, new_value): self.d_status = new_value
 
     # Getters
     def get_name(self): return self.d_name
     def get_ip(self): return self.d_ip
     def get_mac(self): return self.d_mac
-    def get_open_ports(self): return self.d_ports
+    def get_ports(self): return self.d_ports
     def get_status(self): return self.d_status
         
 # Device Manager stores all the devices in an array. 
